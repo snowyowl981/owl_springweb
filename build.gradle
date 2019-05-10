@@ -1,0 +1,69 @@
+plugins {
+    id 'war'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+	providedCompile 'javax.servlet:javax.servlet-api:4.0.+'
+	providedCompile 'javax.servlet.jsp:javax.servlet.jsp-api:2.3.+'
+	runtime 'org.apache.taglibs:taglibs-standard-spec:1.2.5'
+	runtime 'org.apache.taglibs:taglibs-standard-impl:1.2.5'
+	runtime 'org.apache.taglibs:taglibs-standard-jstlel:1.2.5'
+	
+	// owasp encoder
+	compile 'org.owasp.encoder:encoder:+'
+	compile 'org.owasp.encoder:encoder-jsp:+'
+	
+	// spring framework
+	compile 'org.springframework:spring-webmvc:5.+'
+	compile 'org.springframework:spring-jdbc:5.+'
+	
+	// log4j 2	
+	compile 'org.apache.logging.log4j:log4j-api:2.+'
+	compile 'org.apache.logging.log4j:log4j-core:2.+'	
+}
+
+// clear
+task clear {
+	doLast {
+		delete 'build','dist'
+	}
+}
+
+// make dist/WEB-INF/classes
+task makeclasses(dependsOn:compileJava, type:Copy) {
+	from 'build/classes/java/main'
+	from 'src/main/resources'
+	into 'dist/WEB-INF/classes'
+}
+
+// make dist/WEB-INF/lib
+task makelib(type:Sync) {
+	from configurations.runtime.minus(configurations.providedCompile)
+	into 'dist/WEB-INF/lib'
+}
+
+// make dist web
+task makeweb(type: Copy) {
+	from 'src/main/webapp'
+	into 'dist'
+}
+
+// make dist full
+task makedist(dependsOn: [makeclasses, makelib, makeweb])
+
+// dist web
+task distweb(dependsOn:makeweb, type:Copy) {
+	from ('dist') {exclude 'META-INF', 'WEB-INF' }
+	from ('dist') {include 'WEB-INF/jsp/**' }
+	into "$appDir"
+}
+
+// dist full
+task dist(dependsOn:makedist, type:Sync) {
+	from 'dist'
+	into "$appDir"
+}
