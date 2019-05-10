@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="error">
+	<Appenders>
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="[%level] %class{1}.%method()[%lineL] : %message%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Root level="error">
+			<AppenderRef ref="STDOUT" />
+		</Root>
+		<Logger name="org.owl" level="debug" additivity="false">
+			<AppenderRef ref="STDOUT" />
+		</Logger>
+	</Loggers>
+</Configuration>
