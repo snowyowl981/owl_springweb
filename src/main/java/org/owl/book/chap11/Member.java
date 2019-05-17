@@ -1,18 +1,26 @@
 package org.owl.book.chap11;
 
 public class Member {
-	String memberId;
-	String email;
-	String password;
-	String name;
-	String cdate;
-	
+	String memberId; // 아이디
+	String email; // 이메일
+	String password; // 비밀번호
+	String name; // 이름
+	String cdate; // 가입일
+
+	/**
+	 * Default Constructor
+	 */
 	public Member() {
-		// TODO Auto-generated constructor stub
 	}
-	
+
+	/**
+	 * email, password, name 으로 초기화하는 컨스트럭터
+	 * 
+	 * @param email    이메일
+	 * @param password 비밀번호
+	 * @param name     이름
+	 */
 	public Member(String email, String password, String name) {
-		// TODO Auto-generated constructor stub
 		this.email = email;
 		this.password = password;
 		this.name = name;
@@ -57,5 +65,11 @@ public class Member {
 	public void setCdate(String cdate) {
 		this.cdate = cdate;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Member [memberId=" + memberId + ", email=" + email + ", name="
+				+ name + ", cdate=" + cdate + "]";
+	}
 }
+

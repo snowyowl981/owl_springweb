@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * 회원가입 컨트롤러
+ * 
+ * @author Jacob
+ */
 @Controller
 public class RegisterController {
 

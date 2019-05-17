@@ -1,14 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!doctype html>
-<!-- 
-회원 목록
--->
+<!-- 회원 목록 -->
 <html>
 <head>
 <base href="${pageContext.request.contextPath }/" />
 <title>회원 목록</title>
 </head>
 <body>
+	<h2>회원 목록</h2>
 	<p>전체 ${totalCount }건</p>
 	<form action="./app/members">
 		<input type="number" name="page" value="${param.page }" placeholder="페이지"
