@@ -6,6 +6,7 @@
 <title>게시판</title>
 </head>
 <body>
+	<%@ include file="/WEB-INF/jsp/header.jsp"%>
 	<h2>글 보기</h2>
 	<p>
 		<a href="./app/article/list">글 목록</a>

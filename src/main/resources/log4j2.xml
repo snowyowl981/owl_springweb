@@ -3,7 +3,7 @@
 	<Appenders>
 		<Console name="STDOUT" target="SYSTEM_OUT">
 			<PatternLayout
-				pattern="[%level] %class{1}.%method()[%lineL] : %message%n" />
+				pattern="%date{YYYY-MM-dd HH:mm:ss} [%level] %class{1}.%method()[%lineL] : %message%n" />
 		</Console>
 	</Appenders>
 	<Loggers>
