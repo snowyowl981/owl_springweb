@@ -82,4 +82,14 @@ public class ArticleController {
 		articleDao.addArticle(article);
 		return "redirect:/app/article/list";
 	}
+	
+	@PostMapping("/article/modify")
+	public String articleModify(HttpSession session) {
+		Object memberObj = session.getAttribute("MEMBER");
+		if (memberObj == null)
+			// 세션에 MEMBER가 없을 경우 로그인 화면으로
+			return "login/loginForm";
+
+		return "article/addForm";
+	}
 }
