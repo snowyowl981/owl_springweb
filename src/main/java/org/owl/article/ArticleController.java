@@ -82,14 +82,50 @@ public class ArticleController {
 		articleDao.addArticle(article);
 		return "redirect:/app/article/list";
 	}
-	
+	/**
+	 * 글수정 화면
+	 */
+	@GetMapping("/article/modifyForm")
+	public String modifyArticle(@RequestParam("articleId")
+			String articleId, Model model, HttpSession session,
+			@SessionAttribute("MEMBER") Member member) throws Exception {
+			Article article = articleDao.getArticle(articleId);
+			Object memberObj = session.getAttribute("MEMBER");
+			if (memberObj == null)
+				// 세션에 MEMBER가 없을 경우 로그인 화면으로
+				return "login/loginForm";
+			
+			if(!member.getMemberId().equals(article.getUserId()))
+				return "article/modifyFailed";
+			
+			model.addAttribute("article",article);
+			return "article/modifyForm";
+	}
+	/**
+	 * 글수정
+	 */
 	@PostMapping("/article/modify")
-	public String articleModify(HttpSession session) {
-		Object memberObj = session.getAttribute("MEMBER");
-		if (memberObj == null)
-			// 세션에 MEMBER가 없을 경우 로그인 화면으로
-			return "login/loginForm";
-
-		return "article/addForm";
+	public String update(Article article,
+			@SessionAttribute("MEMBER") Member member) {
+			articleDao.modifyArticle(article);
+			
+			return "redirect:/app/article/list";
+	}
+	
+	@GetMapping("/article/delete")
+	public String deleteArticle(@RequestParam("articleId")
+			String articleId, Model model, HttpSession session,
+			@SessionAttribute("MEMBER") Member member) throws Exception {
+			Article article = articleDao.getArticle(articleId);
+			Object memberObj = session.getAttribute("MEMBER");
+			if (memberObj == null)
+				// 세션에 MEMBER가 없을 경우 로그인 화면으로
+				return "login/loginForm";
+				// 사용자 아이디가 다른경우 실패 화면
+			if(!member.getMemberId().equals(article.getUserId()))
+				return "article/deleteFailed";
+				// 삭제 성공
+			articleDao.deleteArticle(article);
+			return "article/delete";
 	}
 }
