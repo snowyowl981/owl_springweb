@@ -86,20 +86,15 @@ public class ArticleController {
 	 * 글수정 화면
 	 */
 	@GetMapping("/article/modifyForm")
-	public String modifyArticle(@RequestParam("articleId")
-			String articleId, Model model, HttpSession session,
-			@SessionAttribute("MEMBER") Member member) throws Exception {
+	public void modifyArticle(@RequestParam("articleId")
+			String articleId, @SessionAttribute("MEMBER") Member member,
+			Model model) throws Exception {
 			Article article = articleDao.getArticle(articleId);
-			Object memberObj = session.getAttribute("MEMBER");
-			if (memberObj == null)
-				// 세션에 MEMBER가 없을 경우 로그인 화면으로
-				return "login/loginForm";
 			
 			if(!member.getMemberId().equals(article.getUserId()))
-				return "article/modifyFailed";
+				throw new RuntimeException("권한이 없습니다.");
 			
 			model.addAttribute("article",article);
-			return "article/modifyForm";
 	}
 	/**
 	 * 글수정
@@ -107,25 +102,27 @@ public class ArticleController {
 	@PostMapping("/article/modify")
 	public String update(Article article,
 			@SessionAttribute("MEMBER") Member member) {
-			articleDao.modifyArticle(article);
+		article.setUserId(member.getMemberId());
+		int updatedRows = articleDao.modifyArticle(article);
+		
+		if (updatedRows == 0)
+			throw new RuntimeException("권한이 없습니다.");
 			
-			return "redirect:/app/article/list";
+			return "redirect:/app/article/view?articleId=" + article.getArticleId();
 	}
 	
 	@GetMapping("/article/delete")
-	public String deleteArticle(@RequestParam("articleId")
-			String articleId, Model model, HttpSession session,
-			@SessionAttribute("MEMBER") Member member) throws Exception {
-			Article article = articleDao.getArticle(articleId);
-			Object memberObj = session.getAttribute("MEMBER");
-			if (memberObj == null)
-				// 세션에 MEMBER가 없을 경우 로그인 화면으로
-				return "login/loginForm";
-				// 사용자 아이디가 다른경우 실패 화면
-			if(!member.getMemberId().equals(article.getUserId()))
-				return "article/deleteFailed";
-				// 삭제 성공
-			articleDao.deleteArticle(article);
-			return "article/delete";
-	}
+	public String delete(@RequestParam("articleId") String articleId,
+			@SessionAttribute("MEMBER") Member member) {
+		int updatedRows = articleDao.deleteArticle(articleId,
+				member.getMemberId());
+
+		// 권한 체크 : 글이 삭제되었는지 확인
+		if (updatedRows == 0)
+			// 글이 삭제되지 않음. 자신이 쓴 글이 아님
+			throw new RuntimeException("No Authority!");
+
+		logger.debug("글을 삭제했습니다. articleId={}", articleId);
+		return "redirect:/app/article/list";
+}
 }
