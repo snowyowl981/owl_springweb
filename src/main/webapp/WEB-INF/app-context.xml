@@ -21,6 +21,8 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/member/**" />
 			<mvc:mapping path="/article/add*" />
+			<mvc:mapping path="/article/update*" />
+			<mvc:mapping path="/article/delete" />
 			<bean class="org.owl.book.chap13.AuthCheckInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>
