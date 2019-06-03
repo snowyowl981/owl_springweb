@@ -23,6 +23,7 @@
 			<mvc:mapping path="/article/add*" />
 			<mvc:mapping path="/article/update*" />
 			<mvc:mapping path="/article/delete" />
+			<mvc:mapping path="/letter/**" />
 			<bean class="org.owl.book.chap13.AuthCheckInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>

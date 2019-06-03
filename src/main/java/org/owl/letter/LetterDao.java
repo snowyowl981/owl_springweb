@@ -2,84 +2,88 @@ package org.owl.letter;
 
 import java.util.List;
 
-import org.owl.letter.letter;
-import org.owl.letter.letter;
-import org.owl.letter.letter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class LetterDao {
-	//받은편지목록
-	static final String RECIVED_LETTER = "select letterId, title, content, senderId, senderName, cdate from letter where (reciverId, reciverName) = (?,?)";
-	//보낸편지목록
-	static final String SENDED_LETTER = "select letterId, title, content, reciverId, reciverName, cdate from letter where (senderId, senderName) = (?,?)";
-	//편지상세보기
-	static final String VIEW_LETTER = "select letterId, title, content, reciverId, reciverName, senderId, senderName, cdate from letter where letterId=?";
-	//편지쓰기(보낸쪽의 보낸편지함, 받은쪽의 받은편지함 두 데이터베이스에 동시에 저장)
-	static final String WRITE_LETTER = "insert letter(title,content,senderId,senderName,revicerId,reciverName) values(?,?,?,?,?,?)";
-	//편지저장
-	static final String SAVE_LETTER = "update letter set title=?, content=? where (letterId, senderId, senderName, revicerId, reciverName) = (?,?,?,?)";
-	//편지삭제(받은사람은 받은사람 데이터베이스에서민 삭제, 보낸사람은 보낸사람 데이터베이스에서만 삭제)
-	static final String DELETE_LETTER = "delete from letter where (letterId, senderId, reciverId) = (?,?,?)";
-	
-	static final String COUNT_LETTER = "select count(letterId) from letter";
-	
+
+	static final String LIST_LETTERS_RECEIVED = "select letterId,title,senderId,senderName,left(cdate,19) cdate from letter where receiverId=? order by letterId desc limit ?,?";
+	static final String LIST_LETTERS_SENT = "select letterId,title,receiverId,receiverName,left(cdate,19) cdate from letter where senderId=? order by letterId desc limit ?,?";
+
+	static final String COUNT_LETTERS_RECEIVED = "select count(letterId) from letter where receiverId=?";
+	static final String COUNT_LETTERS_SENT = "select count(letterId) from letter where senderId=?";
+
+	static final String GET_LETTER = "select letterId,title,content,senderId,senderName,receiverId,receiverName,left(cdate,19) cdate from letter where letterId=? and (senderId=? or receiverId=?)";
+	static final String ADD_LETTER = "insert letter(title,content,senderId,senderName,receiverId,receiverName) values(?,?,?,?,?,?)";
+	static final String DELETE_LETTER = "delete from letter where letterId=? and (senderId=? or receiverId=?)";
+
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
 	RowMapper<Letter> letterRowMapper = new BeanPropertyRowMapper<>(
 			Letter.class);
+
 	/**
-	 * 받은편지건수
+	 * 받은 목록
 	 */
-	public int getLettersCount() {
-		return jdbcTemplate.queryForObject(COUNT_LETTER, Integer.class);
+	public List<Letter> listLettersReceived(String receiverId, int offset,
+			int count) {
+		return jdbcTemplate.query(LIST_LETTERS_RECEIVED, letterRowMapper,
+				receiverId, offset, count);
 	}
-	
+
 	/**
-	 * 받은편지함
+	 * 보낸 목록
 	 */
-	public List<Letter> recivedLetter(int offset, int count) {
-		return jdbcTemplate.query(RECIVED_LETTER, letterRowMapper, offset,
-				count);
+	public List<Letter> listLettersSent(String senderId, int offset,
+			int count) {
+		return jdbcTemplate.query(LIST_LETTERS_SENT, letterRowMapper, senderId,
+				offset, count);
 	}
+
 	/**
-	 * 보낸편지함
+	 * 받은 편지 갯수
 	 */
-	public List<Letter> sendedLetter(int offset, int count) {
-		return jdbcTemplate.query(SENDED_LETTER, letterRowMapper, offset,
-				count);
+	public int countLettersReceived(String receiverId) {
+		return jdbcTemplate.queryForObject(COUNT_LETTERS_RECEIVED,
+				Integer.class, receiverId);
 	}
+
 	/**
-	 * 편지보기
+	 * 보낸 편지 갯수
 	 */
-	public Letter viewLetter(String letterId) {
-		return jdbcTemplate.queryForObject(VIEW_LETTER, letterRowMapper,
-				letterId);
+	public int countLettersSent(String senderId) {
+		return jdbcTemplate.queryForObject(COUNT_LETTERS_SENT, Integer.class,
+				senderId);
 	}
-	
+
 	/**
-	 * 편지쓰기
+	 * 조회
 	 */
-	public int writeLetter(Letter letter) {
-		return jdbcTemplate.update(WRITE_LETTER, letter.getTitle(),
-				letter.getContent(), letter.getSenderId(), letter.getSenderName(),letter.getReciverId(), letter.getReciverName());
+	public Letter getLetter(String letterId, String memberId) {
+		return jdbcTemplate.queryForObject(GET_LETTER, letterRowMapper,
+				letterId, memberId, memberId);
 	}
-	
+
 	/**
-	 * 편지저장
+	 * 추가
 	 */
-	public int saveLetter(Letter letter) {
-		return jdbcTemplate.update(SAVE_LETTER, letter.getTitle(),
-				letter.getContent(), letter.getSenderId(), letter.getSenderName(), 
-				letter.getReciverId(), letter.getReciverName(), letter.getLetterId());
+	public int addLetter(Letter letter) {
+		return jdbcTemplate.update(ADD_LETTER, letter.getTitle(),
+				letter.getContent(), letter.getSenderId(),
+				letter.getSenderName(), letter.getReceiverId(),
+				letter.getReceiverName());
 	}
+
 	/**
-	 * 편지삭제
+	 * 삭제
 	 */
-	public int deleteLetter(String letterId, String senderId, String reciverId) {
-		return jdbcTemplate.update(DELETE_LETTER, letterId, senderId, reciverId);
+	public int deleteLetter(String letterId, String memberId) {
+		return jdbcTemplate.update(DELETE_LETTER, letterId, memberId, memberId);
 	}
+
 }

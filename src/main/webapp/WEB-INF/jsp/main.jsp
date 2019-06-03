@@ -34,6 +34,9 @@
 	<p>
 		<a href="./app/article/list">[게시판]</a>
 	</p>
+	<p>
+		<a href="./app/letter/listReceived">[편지]</a>
+	</p>
 </body>
 </head>
 </html>
