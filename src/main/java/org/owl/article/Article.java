@@ -9,6 +9,21 @@ public class Article {
 	String name;
 	String cdate;
 	String udate;
+	String sweet;
+
+	/**
+	 * @return the sweet
+	 */
+	public String getSweet() {
+		return sweet;
+	}
+
+	/**
+	 * @param sweet the sweet to set
+	 */
+	public void setSweet(String sweet) {
+		this.sweet = sweet;
+	}
 
 	public String getArticleId() {
 		return articleId;
@@ -77,9 +92,8 @@ public class Article {
 
 	@Override
 	public String toString() {
-		return "\nArticle [articleId=" + articleId + ", title=" + title
-				+ ", content=" + content + ", userId=" + userId + ", name="
-				+ name + ", cdate=" + cdate + ", udate=" + udate + "]";
+		return "Article [articleId=" + articleId + ", title=" + title + ", content=" + content + ", userId=" + userId
+				+ ", name=" + name + ", cdate=" + cdate + ", udate=" + udate + ", sweet=" + sweet + "]";
 	}
 
 }

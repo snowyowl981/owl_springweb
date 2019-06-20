@@ -125,4 +125,11 @@ public class ArticleController {
 		logger.debug("글을 삭제했습니다. articleId={}", articleId);
 		return "redirect:/app/article/list";
 }
+	
+	@GetMapping("/article/sweet")
+	public String articleLike(@RequestParam("articleId") String articleId, 
+			@SessionAttribute("MEMBER") Member member) {
+		articleDao.likeArticle(articleId);
+		return "redirect:/app/article/list";
+	}
 }

@@ -39,6 +39,7 @@ th {
 				<th>제목</th>
 				<th>등록자</th>
 				<th>등록일시</th>
+				<th>좋아요</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -48,6 +49,7 @@ th {
 					<td><a href="./app/article/view?articleId=${article.articleId }">${article.title }</a></td>
 					<td>${article.name }</td>
 					<td>${article.cdate }</td>
+					<td><a href="./app/article/sweet?articleId=${article.articleId }">${article.sweet }좋아요</a></td>
 				</tr>
 			</c:forEach>
 		</tbody>

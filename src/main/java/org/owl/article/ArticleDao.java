@@ -1,7 +1,6 @@
 package org.owl.article;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,6 +21,8 @@ public class ArticleDao {
 	static final String MODIFY_ARTICLE = "update article set title=?, content=? where (articleId, userId) = (?,?)";
 	
 	static final String DELETE_ARTICLE = "delete from article where (articleId, userId) = (?,?)";
+	
+	static final String LIKE_ARTICLE = "UPDATE article SET sweet = sweet + 1 WHERE articleId=?";
 	
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -71,6 +72,10 @@ public class ArticleDao {
 	 */
 	public int deleteArticle(String articleId, String userId) {
 		return jdbcTemplate.update(DELETE_ARTICLE, articleId, userId);
+}
+	
+	public int likeArticle(String articleId) {
+		return jdbcTemplate.update(LIKE_ARTICLE, articleId);
 }
 	
 }
